@@ -43,4 +43,4 @@ def rebuild_backbone(init_coords, initial_lengths, initial_angles, initial_dihed
     # initial_lengths is (N-1,), we need [2:] for atoms 4..N
     # initial_angles is (N-2,), we need [1:] for atoms 4..N
     coords = chain_nerf(init_coords, initial_lengths[2:], initial_angles[1:], updated_dihedrals)
-    return coords
+    return coords, updated_dihedrals

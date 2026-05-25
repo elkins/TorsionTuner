@@ -1,11 +1,15 @@
+import jax
 import jax.numpy as jnp
 from diff_biophys.nmr.chemical_shifts import predict_ca_shifts, RANDOM_COIL_CA
 from src.data import RESIDUE_TYPES
 
+# Pre-compute a JAX array for random coil shifts to allow JIT-compatible indexing
+_RC_ARRAY = jnp.array([RANDOM_COIL_CA[res] for res in RESIDUE_TYPES])
+
 def get_residue_rc_shifts(res_indices):
     """Map residue indices to their random coil CA shifts."""
-    rc_list = [RANDOM_COIL_CA[RESIDUE_TYPES[i]] for i in res_indices]
-    return jnp.array(rc_list)
+    # Use JAX indexing instead of list comprehension
+    return _RC_ARRAY[res_indices]
 
 def montelione_loss(phi, psi, target_shifts, res_indices):
     """
@@ -22,7 +26,21 @@ def calculate_ansurr_proxy(phi, psi):
     """
     A simplified proxy for the ANSURR score, measuring structural 
     consistency with secondary structure propensity.
+    
+    This penalizes phi/psi values that fall outside the broad 'favored' 
+    regions of the Ramachandran plot using a soft potential.
     """
-    # High quality structures should have phi/psi clusters in Ramachandran allowed regions
-    # This is a 'soft' penalty for being in disallowed regions
-    pass
+    # Alpha region: phi ~ -60, psi ~ -45
+    alpha_dist = jnp.sqrt((phi + 1.05)**2 + (psi + 0.78)**2)
+    # Beta region: phi ~ -120, psi ~ 135
+    beta_dist = jnp.sqrt((phi + 2.09)**2 + (psi - 2.35)**2)
+    # Left-handed alpha: phi ~ 60, psi ~ 45
+    l_alpha_dist = jnp.sqrt((phi - 1.05)**2 + (psi - 0.78)**2)
+    
+    # Soft minimum distance to any favored region
+    # Using a softmin-like approach
+    sigma = 0.5
+    dist_sq = jnp.stack([alpha_dist, beta_dist, l_alpha_dist], axis=-1)**2
+    penalty = -sigma * jax.nn.logsumexp(-dist_sq / sigma, axis=-1)
+    
+    return jnp.mean(penalty)

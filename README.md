@@ -2,7 +2,7 @@
 
 The **Experimental Fine-Tuner** is a specialized machine learning tool designed to bridge the gap between "idealized" static protein structures (like those from AlphaFold) and "dynamic" solution-state experimental data (SAXS/NMR). 
 
-By utilizing a JAX-based Graph Neural Network (GNN) and a differentiable kinematics layer, the model applies subtle adjustments to the backbone dihedral angles ($\phi/\psi$) to minimize the discrepancy between the predicted structure and real experimental scattering curves.
+By utilizing a JAX-based Graph Neural Network (GNN) and a differentiable kinematics layer, the model applies subtle adjustments to the backbone dihedral angles ($\phi/\psi$) to minimize the discrepancy between the predicted structure and real experimental observables.
 
 ---
 
@@ -10,87 +10,79 @@ By utilizing a JAX-based Graph Neural Network (GNN) and a differentiable kinemat
 
 ### 1. The Torsional Prediction Strategy
 Instead of predicting 3D coordinates ($x, y, z$) directly—which can easily break chemical constraints like bond lengths—this model predicts **torsional deltas** ($\Delta\phi, \Delta\psi$). 
-*   **Advantage:** By keeping bond lengths and bond angles fixed to their idealized values, we ensure the resulting structure is always chemically valid (no "stretched" bonds).
+*   **Advantage:** By keeping bond lengths and bond angles fixed to their idealized values, we ensure the resulting structure is always chemically valid.
 *   **Input:** Initial backbone angles from an AlphaFold PDB.
 *   **Output:** Small angular adjustments that "nudge" the protein into a conformation that fits the data.
 
 ### 2. Differentiable Kinematics (NeRF)
-To calculate a loss against experimental data, we must convert the predicted angles back into 3D coordinates. We use the **Natural Extension Reference Frame (NeRF)** algorithm, implemented in JAX.
-*   **Forward Pass:** Angles $\rightarrow$ 3D Coordinates $\rightarrow$ Simulated SAXS.
-*   **Backward Pass:** $\frac{\partial \text{Loss}}{\partial \text{SAXS}} \rightarrow \frac{\partial \text{SAXS}}{\partial \text{Coords}} \rightarrow \frac{\partial \text{Coords}}{\partial \text{Angles}} \rightarrow \frac{\partial \text{Angles}}{\partial \text{GNN Weights}}$.
-*   This allows the experimental data to directly "teach" the GNN how to fold the protein.
+To calculate a loss against experimental data, we convert the predicted angles back into 3D coordinates using the **Natural Extension Reference Frame (NeRF)** algorithm, implemented in JAX.
+*   **Forward Pass:** Angles $\rightarrow$ 3D Coordinates $\rightarrow$ Simulated Observables (SAXS/NMR).
+*   **Backward Pass:** Gradients flow from the experimental loss back through the kinematics layer to the GNN weights.
 
-### 3. The SAXS Loss Function (Debye Formula)
-We use the **Debye formula** to simulate Small-Angle X-ray Scattering (SAXS) intensities $I(q)$ from the 3D coordinates:
-$$I(q) = \sum_{i} \sum_{j} f_i(q) f_j(q) \frac{\sin(q r_{ij})}{q r_{ij}}$$
-The model is trained to minimize the Mean Squared Error (MSE) between this simulated $I(q)$ and your experimental $I(q)$.
+### 3. Multi-Objective Loss Function
+The model optimizes a weighted combination of multiple experimental and structural constraints:
+$$\mathcal{L}_{total} = w_{saxs}\mathcal{L}_{saxs} + w_{nmr}\mathcal{L}_{nmr} + w_{quality}\mathcal{L}_{quality} + w_{reg}\mathcal{L}_{reg}$$
+
+*   **SAXS Loss:** Uses the Debye formula to fit Small-Angle X-ray Scattering profiles.
+*   **NMR Loss:** Fits experimental $C_\alpha$ chemical shifts using a differentiable predictor.
+*   **Quality Loss (ANSURR Proxy):** A soft Ramachandran penalty that ensures $\phi/\psi$ angles remain in favored regions.
+*   **Regularization:** Prevents over-fitting by keeping the angular "nudges" small.
 
 ---
 
 ## 🛠 Software Architecture
 
-*   **`src/data.py`**: Handles PDB loading using `Biotite`. It extracts the backbone (N, CA, C atoms) and constructs a graph where residues are nodes and edges represent sequence adjacency or spatial proximity.
-*   **`src/model.py`**: An **Equinox** (JAX-native) GNN. It uses message-passing layers to allow residues to "communicate" with their neighbors before predicting their local angular shifts.
-*   **`src/kinematics.py`**: The bridge between angles and 3D space. It ensures that any update to a single angle correctly propagates to all subsequent atoms in the chain.
-*   **`src/train.py`**: The orchestration layer. It sets up the **Optax** optimizer (AdamW), applies gradient clipping for stability, and executes the training loop.
+*   **`src/data.py`**: PDB loading and graph construction using `Biotite`.
+*   **`src/model.py`**: An **Equinox** (JAX-native) GNN with message-passing layers.
+*   **`src/kinematics.py`**: The JAX-differentiable bridge between angles and 3D space.
+*   **`src/montelione_utils.py`**: Implementation of chemical shift losses and structural quality proxies.
+*   **`src/train.py`**: The orchestration layer using **Optax** for optimization.
 
 ---
 
 ## 🚀 Getting Started
 
 ### 1. Installation
-Ensure you have a Python 3.10+ environment.
 ```bash
-# Install core dependencies and the local biophysics library
+# Install core dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Preparing Your Data
-1.  Place your "idealized" AlphaFold structure in the project root as `input.pdb`.
-2.  (Optional) If you have a specific SAXS profile, update `src/train.py` to load your experimental $I(q)$ data instead of using the synthetic helix target.
-
-### 3. Running a Refinement
-You can test the system using the provided helix generator:
+### 2. Running a Refinement
 ```bash
 # 1. Generate a synthetic "target" helix
 python generate_test_pdb.py
 
-# 2. Run the fine-tuning optimization
+# 2. Run the multi-objective fine-tuning optimization
 PYTHONPATH=. python src/train.py
 ```
 
-### 4. Interpreting Results
-*   **`test_helix.pdb`**: Your starting "idealized" structure.
-*   **`refined_helix.pdb`**: The output structure after the GNN has adjusted it to fit the experimental data.
-*   Check the console output for the **Loss** values; a decreasing loss indicates the model is successfully "fitting" the structure to the data.
+---
+
+## 🏛 Research Integration (The Montelione Group Approach)
+This project implements refinement strategies pioneered by the **Montelione Group** (RPI/Rutgers) for integrating AI-predicted structures with NMR data.
+
+### 1. Chemical Shift Driven Refinement
+Research shows that AlphaFold models often rival the accuracy of experimental NMR structures but can be further improved by fitting to backbone chemical shifts.
+*   **Implementation:** We use differentiable $C_\alpha$ shift prediction to "nudge" models towards experimental accuracy.
+*   **Reference:** *Tejero R, et al. (2022). "AlphaFold models of small proteins rival the accuracy of solution NMR structures." Frontiers in Molecular Biosciences.*
+
+### 2. Validation with RPF-DP and ANSURR
+The Montelione lab advocates for rigorous validation of refined models using "goodness-of-fit" metrics.
+*   **RPF-DP:** Measures how well the 3D model fits unassigned NOESY peak lists (Recall, Precision, F-measure, and Discrimination Power).
+*   **ANSURR:** Validates accuracy by comparing flexibility predicted from chemical shifts (RCI) with flexibility from the 3D structure.
+*   **Reference:** *Huang YJ, et al. (2012). "RPF: a quality assessment tool for protein NMR structures." Nucleic Acids Research.*
+*   **Reference:** *Fowler NJ, et al. (2020). "A method for validating the accuracy of NMR protein structures." Nature Communications.*
+
+### 3. PSVS Suite
+Refined structures should be validated using the **Protein Structure Validation Software (PSVS)** suite.
+*   **Utility:** Confirms that the refinement has improved the "NMR-quality" of the prediction.
+*   **Link:** [PSVS Server](http://psvs-1_5.nesg.org/)
 
 ---
 
-## 🔬 For Structural Biologists
-...
-*   **Data Types:** While currently set up for SAXS, the `diff-biophys` library supports NMR (RDCs, J-couplings) and can be easily swapped in `src/train.py`.
-
-## 🏛 Integrating Research from the Montelione Group
-The **Montelione Group** (Gaetano Montelione, RPI) has pioneered the integration of AI-predicted structures with NMR data. You can leverage their research findings in this project through the following workflows:
-
-### 1. AlphaFold-NMR Workflow
-Instead of refining a single structure, the Montelione group advocates for an **Ensemble Conformer Selection** approach.
-*   **Step:** Use the Fine-Tuner to generate multiple refined structures by varying the `train_key` (random seed) or the `q_values` range.
-*   **Step:** Score the resulting ensemble against experimental NOESY or chemical shift data using the **RPF-DP** (Recall, Precision, F-measure) metrics developed by the lab.
-
-### 2. Chemical Shift Driven Refinement
-The lab's research shows that AlphaFold models often rival the accuracy of experimental NMR structures for small proteins. You can further refine these models using chemical shift data.
-*   **Implementation:** See `src/montelione_utils.py`. We have implemented a differentiable loss function based on **CA Chemical Shift Prediction**.
-*   **Utility:** This allows you to "nudge" the AlphaFold structure to better match experimental $C_\alpha$ shifts, which are highly sensitive to secondary structure ($\alpha$-helices and $\beta$-sheets).
-
-### 3. Structure Validation with PSVS
-The **Protein Structure Validation Software (PSVS)** suite from the Montelione lab is the "gold standard" for validating how well a model fits NMR observables.
-*   **Integration:** After refining your structure with the GNN, submit the `refined_structure.pdb` to the [PSVS server](http://psvs-1_5.nesg.org/).
-*   **Metrics:** Focus on the **ANSURR** score (which measures structural rigidity vs. chemical shifts) and the **RPF-DP** scores to confirm that your refinement has improved the "NMR-quality" of the AlphaFold prediction.
-
-## 💻 For Computer Scientists
-...
-
-*   **Framework:** JAX was chosen over PyTorch for its superior performance in "simulation-in-the-loop" training where the loss function itself involves heavy linear algebra (NeRF) and trigonometric operations.
-*   **GNN Detail:** The default model is a 3-layer Graph Convolutional Network. You can increase the `hidden_dim` in `src/train.py` for more complex proteins.
-*   **Stability:** We use `optax.clip_by_global_norm(1.0)` to prevent the "exploding gradient" problem often found in recurrent-like kinematic chains.
+## 📖 Key References
+*   **RPF Scores:** Huang, Y. J., et al. (2005). *J. Am. Chem. Soc.*, 127(5), 1665–1674.
+*   **Rosetta Refinement:** Mao, B., et al. (2014). *J. Am. Chem. Soc.*, 136(5), 1893–1906.
+*   **AlphaFold-NMR Assessment:** Li, E. H., et al. (2023). *J. Magn. Reson.*, 352, 107481.
+*   **Debye Formula for SAXS:** Debye, P. (1915). *Annalen der Physik*, 351(6), 809-876.
