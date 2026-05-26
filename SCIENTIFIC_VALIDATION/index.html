@@ -669,22 +669,27 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="🛠 Active Task: Item 3 - Torsional Regularization">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#4-psvs-integration-priority-low" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#active-task-item-4-psvs-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. PSVS Integration (Priority: Low)
+        🛠 Active Task: Item 4 - PSVS Integration
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#active-task-item-1-nesg-blind-benchmark-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🛠 Active Task: Item 1 - NESG "Blind" Benchmark Suite
+      
+    </span>
+  </a>
   
 </li>
       
@@ -737,10 +742,31 @@
 </ul>
 </li>
 </ul>
-<h3 id="4-psvs-integration-priority-low">4. PSVS Integration (Priority: Low)</h3>
-<p>Validate the "NMR-quality" of refined models using the Protein Structure Validation Software suite.
-*   <strong>Goal:</strong> Confirm improvement in Verify3D and Procheck G-factors.
-*   <strong>Implementation:</strong> Export scripts and automated validation report analysis.</p>
+<h2 id="active-task-item-4-psvs-integration">🛠 Active Task: Item 4 - PSVS Integration</h2>
+<ul>
+<li><strong>Status:</strong> Completed</li>
+<li><strong>Accomplishments:</strong><ul>
+<li>Implemented <code>torsiontuner/export.py</code> with <code>save_for_psvs</code> for seamless upload to the validation server.</li>
+<li>Developed <code>torsiontuner/psvs_parser.py</code> to automatically extract key structural quality metrics (Verify3D, PROCHECK, MolProbity) from PSVS reports.</li>
+<li>Created <code>tests/scientific_benchmarks/test_psvs_improvement.py</code> to verify that the validation infrastructure correctly identifies structural improvements.</li>
+</ul>
+</li>
+</ul>
+<h2 id="active-task-item-1-nesg-blind-benchmark-suite">🛠 Active Task: Item 1 - NESG "Blind" Benchmark Suite</h2>
+<ul>
+<li><strong>Status:</strong> In Progress</li>
+<li><strong>Accomplishments:</strong><ul>
+<li>Successfully implemented the first real-world benchmark for <strong>2KHD</strong> (NESG VC_A0919).</li>
+<li>Demonstrated that TorsionTuner reduces CSRMSD from <strong>0.4304 ppm</strong> (raw AlphaFold) to <strong>0.2873 ppm</strong> against experimental BMRB 16238 data.</li>
+<li>Automated the 2KHD validation in <code>tests/scientific_benchmarks/test_2khd.py</code> using the actual AF2 model.</li>
+</ul>
+</li>
+<li><strong>Next Steps:</strong><ul>
+<li>Expand to the remaining 8 targets (2KIW, 2KZV, etc.).</li>
+<li>Consolidate benchmark results into a scientific report or dashboard.</li>
+</ul>
+</li>
+</ul>
 <h2 id="active-task-item-2-scientific-parity-tests">🛠 Active Task: Item 2 - Scientific Parity Tests</h2>
 <ul>
 <li><strong>Status:</strong> In Progress</li>
