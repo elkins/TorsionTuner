@@ -35,6 +35,8 @@ dev = [
     "mypy",
     "pandas",
     "pre-commit",
+    "synth-nmr",   # reference predictor for Tier 1.1 parity tests
+    "biotite",     # required by synth-nmr (also a main dep, listed here for explicitness)
 ]
 docs = [
     "mkdocs",
