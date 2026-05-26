@@ -30,7 +30,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [.] # Path to the source code
+          paths: [.] # The package is now torsiontuner/ at root
 
 nav:
   - Home: index.md

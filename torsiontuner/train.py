@@ -3,10 +3,10 @@ import jax.numpy as jnp
 import jax.random as jr
 import optax
 import equinox as eqx
-from src.data import load_pdb, get_graph_features
-from src.model import FineTunerGNN
-from src.kinematics import rebuild_backbone
-from src.montelione_utils import montelione_loss, calculate_ansurr_proxy, get_residue_rc_shifts
+from torsiontuner.data import load_pdb, get_graph_features
+from torsiontuner.model import FineTunerGNN
+from torsiontuner.kinematics import rebuild_backbone
+from torsiontuner.montelione_utils import montelione_loss, calculate_ansurr_proxy, get_residue_rc_shifts
 from diff_biophys.saxs import debye_saxs
 from diff_biophys.nmr.chemical_shifts import predict_ca_shifts
 
@@ -196,5 +196,5 @@ def train(config: Config = Config()):
     return model
 
 if __name__ == "__main__":
-    from src.data import RESIDUE_TYPES # Needed for PDB saving refactor
+    from torsiontuner.data import RESIDUE_TYPES # Needed for PDB saving refactor
     train()

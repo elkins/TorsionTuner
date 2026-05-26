@@ -1,3 +1,3 @@
 # Model Module
 
-::: src.model
+::: torsiontuner.model

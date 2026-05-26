@@ -1,7 +1,7 @@
 import jax.numpy as jnp
 import numpy as np
-from src.data import load_pdb
-from src.kinematics import rebuild_backbone
+from torsiontuner.data import load_pdb
+from torsiontuner.kinematics import rebuild_backbone
 
 def test_kinematics_reconstruction():
     # 1. Load the test helix

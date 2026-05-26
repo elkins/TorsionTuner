@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from src.data import load_pdb, get_graph_features
+from torsiontuner.data import load_pdb, get_graph_features
 import os
 
 def test_load_pdb():

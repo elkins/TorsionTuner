@@ -1,3 +1,3 @@
 # Data Module
 
-::: src.data
+::: torsiontuner.data

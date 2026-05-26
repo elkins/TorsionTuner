@@ -1,7 +1,7 @@
 import jax
 import jax.numpy as jnp
 import jax.random as jr
-from src.model import FineTunerGNN
+from torsiontuner.model import FineTunerGNN
 
 def test_model_forward():
     key = jr.PRNGKey(0)

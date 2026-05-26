@@ -1,3 +1,3 @@
 # Kinematics Module
 
-::: src.kinematics
+::: torsiontuner.kinematics
