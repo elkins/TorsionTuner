@@ -1,5 +1,3 @@
-import os
-
 from torsiontuner.data import get_graph_features, load_pdb
 
 

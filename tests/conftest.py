@@ -1,6 +1,8 @@
 import os
+
 import pytest
 from synth_pdb.generator import PeptideGenerator
+
 
 @pytest.fixture(scope="session", autouse=True)
 def ensure_test_helix():
