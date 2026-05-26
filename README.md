@@ -11,10 +11,10 @@
 
 ## 🌟 Why TorsionTuner?
 
-Static snapshots of proteins (like those from AlphaFold) often miss the subtle "dynamic" nuances of molecules in their natural, solution-state environments. **TorsionTuner** bridges this gap. It is a specialized machine learning engine that "nudges" idealized structures into better agreement with real-world experimental data.
+Static snapshots of proteins, such as those from AlphaFold, often miss the subtle dynamic nuances of molecules in their natural, solution-state environments.  **TorsionTuner** bridges this gap. It is a specialized machine learning engine that "nudges" idealized structures into better agreement with real-world experimental data.
 
 ### The Problem
-Traditional refinement often breaks the laws of chemistry—bond lengths stretch, and angles distort—just to fit noisy data.
+Traditional refinement often breaks the laws of chemistry -— bond lengths stretch and angles distort -— just to fit noisy data.
 
 ### The TorsionTuner Solution
 By operating exclusively in **torsional space** ($\phi/\psi$ angles), we ensure the laws of physics are respected. Our differentiable kinematics layer allows gradients to flow from the experimental loss (SAXS/NMR) directly back into the GNN weights, creating a chemically valid, evidence-based refinement.
