@@ -5,6 +5,8 @@
 ![Docs](https://github.com/elkins/TorsionTuner/workflows/Deploy%20Docs/badge.svg)
 ![License](https://img.shields.io/github/license/elkins/TorsionTuner)
 
+**Documentation:** [https://elkins.github.io/TorsionTuner/](https://elkins.github.io/TorsionTuner/)
+
 The **TorsionTuner** is a specialized machine learning tool designed to bridge the gap between "idealized" static protein structures (like those from AlphaFold) and "dynamic" solution-state experimental data (SAXS/NMR). 
 
 By utilizing a JAX-based Graph Neural Network (GNN) and a differentiable kinematics layer, the model applies subtle adjustments to the backbone dihedral angles ($\phi/\psi$) to minimize the discrepancy between the predicted structure and real experimental observables.
@@ -37,11 +39,11 @@ $$\mathcal{L}_{total} = w_{saxs}\mathcal{L}_{saxs} + w_{nmr}\mathcal{L}_{nmr} + 
 
 ## 🛠 Software Architecture
 
-*   **`src/data.py`**: PDB loading and graph construction using `Biotite`.
-*   **`src/model.py`**: An **Equinox** (JAX-native) GNN with message-passing layers.
-*   **`src/kinematics.py`**: The JAX-differentiable bridge between angles and 3D space.
-*   **`src/montelione_utils.py`**: Implementation of chemical shift losses and structural quality proxies.
-*   **`src/train.py`**: The orchestration layer using **Optax** for optimization.
+*   **`torsiontuner/data.py`**: PDB loading and graph construction using `Biotite`.
+*   **`torsiontuner/model.py`**: An **Equinox** (JAX-native) GNN with message-passing layers.
+*   **`torsiontuner/kinematics.py`**: The JAX-differentiable bridge between angles and 3D space.
+*   **`torsiontuner/montelione_utils.py`**: Implementation of chemical shift losses and structural quality proxies.
+*   **`torsiontuner/train.py`**: The orchestration layer using **Optax** for optimization.
 
 ---
 
@@ -63,7 +65,7 @@ pip install -e .
 python generate_test_pdb.py
 
 # 2. Run the multi-objective fine-tuning optimization
-PYTHONPATH=. python src/train.py
+python -m torsiontuner.train
 ```
 
 ---
@@ -95,3 +97,8 @@ Refined structures should be validated using the **Protein Structure Validation 
 *   **Rosetta Refinement:** Mao, B., et al. (2014). *J. Am. Chem. Soc.*, 136(5), 1893–1906.
 *   **AlphaFold-NMR Assessment:** Li, E. H., et al. (2023). *J. Magn. Reson.*, 352, 107481.
 *   **Debye Formula for SAXS:** Debye, P. (1915). *Annalen der Physik*, 351(6), 809-876.
+
+---
+
+## ⚖️ License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
