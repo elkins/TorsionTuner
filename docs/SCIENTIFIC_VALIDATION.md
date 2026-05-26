@@ -21,10 +21,12 @@ Verify that internal predictors (Chemical Shifts, SAXS) match established gold-s
     *   Empirically proved that TorsionTuner can restore physical realism to structures with significant Ramachandran violations.
     *   Demonstrated that the multi-objective loss function (ANSURR proxy + NMR) successfully overcomes random initialization noise to "fix" unphysical starting points.
 
-### 4. PSVS Integration (Priority: Low)
-Validate the "NMR-quality" of refined models using the Protein Structure Validation Software suite.
-*   **Goal:** Confirm improvement in Verify3D and Procheck G-factors.
-*   **Implementation:** Export scripts and automated validation report analysis.
+## 🛠 Active Task: Item 4 - PSVS Integration
+*   **Status:** Completed
+*   **Accomplishments:**
+    *   Implemented `torsiontuner/export.py` with `save_for_psvs` for seamless upload to the validation server.
+    *   Developed `torsiontuner/psvs_parser.py` to automatically extract key structural quality metrics (Verify3D, PROCHECK, MolProbity) from PSVS reports.
+    *   Created `tests/scientific_benchmarks/test_psvs_improvement.py` to verify that the validation infrastructure correctly identifies structural improvements.
 
 ## 🛠 Active Task: Item 1 - NESG "Blind" Benchmark Suite
 *   **Status:** In Progress
