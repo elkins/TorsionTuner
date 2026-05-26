@@ -103,9 +103,7 @@ def test_torsional_regularization_recovery():
             final_phi = final_dihedrals[2::3]
             final_psi = final_dihedrals[0::3]
             current_penalty = ramachandran_penalty(final_phi, final_psi)
-            print(
-                f"Step {step}, Loss: {loss:.6f}, Rama Penalty: {current_penalty:.6f}"
-            )
+            print(f"Step {step}, Loss: {loss:.6f}, Rama Penalty: {current_penalty:.6f}")
 
     # 7. Validation
     final_deltas = model(node_features, adj, edge_features)
