@@ -26,6 +26,16 @@ Validate the "NMR-quality" of refined models using the Protein Structure Validat
 *   **Goal:** Confirm improvement in Verify3D and Procheck G-factors.
 *   **Implementation:** Export scripts and automated validation report analysis.
 
+## 🛠 Active Task: Item 1 - NESG "Blind" Benchmark Suite
+*   **Status:** In Progress
+*   **Accomplishments:**
+    *   Successfully implemented the first real-world benchmark for **2KHD** (NESG VC_A0919).
+    *   Demonstrated that TorsionTuner reduces CSRMSD from **0.4304 ppm** (raw AlphaFold) to **0.2873 ppm** against experimental BMRB 16238 data.
+    *   Automated the 2KHD validation in `tests/scientific_benchmarks/test_2khd.py` using the actual AF2 model.
+*   **Next Steps:**
+    *   Expand to the remaining 8 targets (2KIW, 2KZV, etc.).
+    *   Consolidate benchmark results into a scientific report or dashboard.
+
 ## 🛠 Active Task: Item 2 - Scientific Parity Tests
 *   **Status:** In Progress
 *   **Completed:**
