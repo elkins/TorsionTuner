@@ -106,8 +106,8 @@ classifiers = [
 dependencies = [
     "jax<0.4.31",
     "jaxlib<0.4.31",
-    "optax",
-    "equinox",
+    "optax<0.2.3",
+    "equinox<0.12.0",
     "biotite",
     "numpy<2.0.0",
     "diff-biophys",
