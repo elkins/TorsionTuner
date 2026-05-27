@@ -109,7 +109,7 @@ dependencies = [
     "optax",
     "equinox",
     "biotite",
-    "numpy",
+    "numpy<2.0.0",
     "diff-biophys",
     "synth-pdb",
 ]
