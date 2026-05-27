@@ -89,7 +89,7 @@ exclude_lines = [
 
 [project]
 name = "torsiontuner"
-version = "0.1.0"
+version = "0.1.1"
 description = "GNN-based protein structure refinement via differentiable torsions"
 authors = [{name = "George Elkins"}]
 license = "MIT"
