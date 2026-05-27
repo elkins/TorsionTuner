@@ -115,7 +115,9 @@ def get_graph_features(data: dict) -> tuple[jnp.ndarray, jnp.ndarray, jnp.ndarra
 
     # Spatial adjacency (CA-CA)
     ca_coords = coords[1::3]
-    dist_matrix = jnp.sqrt(jnp.sum((ca_coords[:, None, :] - ca_coords[None, :, :]) ** 2, axis=-1))
+    dist_matrix = jnp.sqrt(
+        jnp.sum((ca_coords[:, None, :] - ca_coords[None, :, :]) ** 2, axis=-1)
+    )
     spatial_adj = (dist_matrix < 10.0).astype(jnp.float32)
 
     adj = (seq_adj + spatial_adj > 0).astype(jnp.float32)

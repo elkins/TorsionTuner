@@ -121,9 +121,9 @@ def test_torsional_regularization_recovery():
     print(f"Final Rama Penalty: {final_penalty:.6f}")
 
     # Recovery Criterion: Penalty should decrease significantly
-    assert final_penalty < initial_penalty, (
-        f"Model failed to improve physical realism: {final_penalty} >= {initial_penalty}"
-    )
+    assert (
+        final_penalty < initial_penalty
+    ), f"Model failed to improve physical realism: {final_penalty} >= {initial_penalty}"
 
 
 if __name__ == "__main__":

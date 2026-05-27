@@ -49,7 +49,9 @@ def test_2rn7_benchmark():
     pdb_path = os.path.join(data_dir, "starting_model.pdb")
 
     # ── 1. Data loading checks ────────────────────────────────────────────────
-    assert len(shift_data) == 91, f"Expected 91 CA shifts from BMRB 11017, got {len(shift_data)}"
+    assert (
+        len(shift_data) == 91
+    ), f"Expected 91 CA shifts from BMRB 11017, got {len(shift_data)}"
     assert set(shift_data.columns) >= {
         "residue",
         "atom",
@@ -57,13 +59,15 @@ def test_2rn7_benchmark():
     }, "shifts.csv missing expected columns"
     assert (shift_data["atom"] == "CA").all(), "shifts.csv should contain only CA atoms"
     assert shift_data["residue"].min() == 2, "Residue numbering should start at 2"
-    assert shift_data["residue"].max() <= 108, "Residue numbers should not exceed chain length"
+    assert (
+        shift_data["residue"].max() <= 108
+    ), "Residue numbers should not exceed chain length"
 
     # Sanity-check shift range: Cα spans ~40–72 ppm across all amino acids
     # (Gly can reach ~42 ppm; Pro Cα can reach ~65–67 ppm)
-    assert shift_data["shift"].between(40.0, 72.0).all(), (
-        "Some Cα shifts are outside the physically plausible range [40, 72] ppm"
-    )
+    assert (
+        shift_data["shift"].between(40.0, 72.0).all()
+    ), "Some Cα shifts are outside the physically plausible range [40, 72] ppm"
     print(
         f"Data check: {len(shift_data)} CA shifts, "
         f"residues {shift_data['residue'].min()}–{shift_data['residue'].max()}, "
@@ -98,8 +102,7 @@ def test_2rn7_benchmark():
     key = jr.PRNGKey(42)
     model = FineTunerGNN(node_dim=20, hidden_dim=64, out_dim=2, n_layers=3, key=key)
     optimizer = optax.chain(
-        optax.clip_by_global_norm(1.0),
-        optax.adamw(learning_rate=5e-4),
+        optax.clip_by_global_norm(1.0), optax.adamw(learning_rate=5e-4)
     )
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 

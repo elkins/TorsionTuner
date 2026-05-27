@@ -19,10 +19,14 @@ class GNNLayer(eqx.Module):
     def __init__(self, node_dim, out_dim, key):
         keys = jr.split(key, 3)
         self.lin_node = eqx.nn.Linear(node_dim, out_dim, key=keys[0])
-        self.lin_edge = eqx.nn.Linear(1, out_dim, key=keys[1])  # 1D edge feature: distance
+        self.lin_edge = eqx.nn.Linear(
+            1, out_dim, key=keys[1]
+        )  # 1D edge feature: distance
         self.lin_out = eqx.nn.Linear(out_dim, out_dim, key=keys[2])
 
-    def __call__(self, x: jnp.ndarray, adj: jnp.ndarray, edge_features: jnp.ndarray) -> jnp.ndarray:
+    def __call__(
+        self, x: jnp.ndarray, adj: jnp.ndarray, edge_features: jnp.ndarray
+    ) -> jnp.ndarray:
         """
         Forward pass of the GNN layer.
 
@@ -77,7 +81,9 @@ class FineTunerGNN(eqx.Module):
 
         self.output_head = eqx.nn.Linear(hidden_dim, out_dim, key=keys[-1])
 
-    def __call__(self, x: jnp.ndarray, adj: jnp.ndarray, edge_features: jnp.ndarray) -> jnp.ndarray:
+    def __call__(
+        self, x: jnp.ndarray, adj: jnp.ndarray, edge_features: jnp.ndarray
+    ) -> jnp.ndarray:
         """
         Predict structural adjustments.
 

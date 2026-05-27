@@ -10,10 +10,7 @@ from diff_biophys.nmr.chemical_shifts import predict_ca_shifts
 from torsiontuner.data import get_graph_features, load_pdb
 from torsiontuner.kinematics import rebuild_backbone
 from torsiontuner.model import FineTunerGNN
-from torsiontuner.montelione_utils import (
-    get_residue_rc_shifts,
-    ramachandran_penalty,
-)
+from torsiontuner.montelione_utils import get_residue_rc_shifts, ramachandran_penalty
 
 
 def calculate_cs_rmsd(phi, psi, target_shifts, res_indices):
