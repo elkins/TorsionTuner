@@ -71,7 +71,7 @@ def test_torsional_regularization_recovery() -> None:
 
     optimizer = optax.chain(
         optax.clip_by_global_norm(1.0),
-        optax.adamw(learning_rate=1e-3),
+        optax.adamw(learning_rate=1e-4),
     )
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
