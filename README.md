@@ -1,6 +1,6 @@
 # 🧬 Torsion-Tuner: GNN-Based Protein Structure Refinement
 
-[![codecov](https://codecov.io/gh/elkins/torsion-tuner/graph/badge.svg)](https://codecov.io/gh/elkins/torsion-tuner)
+[![codecov](https://codecov.io/gh/elkins/torsion-tuner/branch/master/graph/badge.svg)](https://codecov.io/gh/elkins/torsion-tuner)
 [![Tests](https://github.com/elkins/torsion-tuner/actions/workflows/test.yml/badge.svg)](https://github.com/elkins/torsion-tuner/actions/workflows/test.yml)
 [![Lint](https://github.com/elkins/torsion-tuner/actions/workflows/lint.yml/badge.svg)](https://github.com/elkins/torsion-tuner/actions/workflows/lint.yml)
 [![Docs](https://github.com/elkins/torsion-tuner/actions/workflows/docs.yml/badge.svg)](https://github.com/elkins/torsion-tuner/actions/workflows/docs.yml)
